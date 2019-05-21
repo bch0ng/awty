@@ -15,12 +15,14 @@
             android:inputType="phone"
             android:ems="10"
             android:maxLength="10"
+            android:hint="Phone Number"
             android:id="@+id/phone_num"/>
     <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
+            android:hint="Spam Frequency (min)"
             android:id="@+id/spam_min"/>
     <Button
             android:text="Start"

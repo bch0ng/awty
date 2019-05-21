@@ -1,8 +1,15 @@
 package edu.us.ischool.bchong.awty
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.telephony.PhoneNumberUtils
+import android.telephony.SmsManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
@@ -55,12 +62,26 @@ class MainActivity : AppCompatActivity() {
                 startButton.text = "Stop"
                 val period: Long = spamMin.text.toString().toLong() * 60 * 1000
                 val phoneNumString = phoneNum.text.toString()
-                val phoneFormat = "(" + phoneNumString.substring(0, 3) + ") " +
-                        phoneNumString.substring(3, 6) + "-" + phoneNumString.substring(6, 10)
-                val message = "$phoneFormat: Are we there yet?"
+                val message = "Are we there yet?"
+                val smsManager = SmsManager.getDefault()
                 timer = fixedRateTimer("awty", false, 0L, period) {
                     this@MainActivity.runOnUiThread {
-                        Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                        if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.SEND_SMS)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(this@MainActivity,
+                                arrayOf(Manifest.permission.SEND_SMS),
+                                0)
+
+                        } else {
+                            Toast.makeText(this@MainActivity, "HELLO", Toast.LENGTH_SHORT).show()
+                            smsManager.sendTextMessage(
+                                phoneNumString,
+                                null,
+                                message,
+                                null,
+                                null
+                            )
+                        }
                     }
                 }
             } else {
